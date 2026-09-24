@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-row">
+  <h2>📋 Login Attempt Logs</h2>
+  <a href="{{ url_for('logs_export') }}" class="btn">⬇ Export CSV</a>
+</div>
+<table>
+  <tr><th>ID</th><th>Username</th><th>IP</th><th>User Agent</th>
+      <th>Status</th><th>Time</th></tr>
+  {% for l in logs %}
+  <tr>
+    <td>{{ l[0] }}</td><td>{{ l[1] }}</td><td>{{ l[2] }}</td>
+    <td>{{ l[3][:50] }}</td>
+    <td>{% if l[4] %}<span class="badge success">SUCCESS</span>
+        {% else %}<span class="badge fail">FAIL</span>{% endif %}</td>
+    <td>{{ l[5] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>📝 Register</h2>
+  <form method="POST">
+    <input name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Strong password" required>
+    <small>8+ chars · upper · lower · digit · symbol</small>
+    <button type="submit">Register</button>
+  </form>
+  <p><a href="{{ url_for('login') }}">Back to login</a></p>
+</div>
+{% endblock %}

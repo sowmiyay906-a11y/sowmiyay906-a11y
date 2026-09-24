@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>🔔 Security Alerts</h2>
+<table>
+  <tr><th>ID</th><th>Type</th><th>Message</th>
+      <th>Severity</th><th>IP</th><th>Time</th></tr>
+  {% for a in rows %}
+  <tr>
+    <td>{{ a[0] }}</td><td>{{ a[1] }}</td><td>{{ a[2] }}</td>
+    <td class="sev-{{ a[3]|lower }}">{{ a[3] }}</td>
+    <td>{{ a[4] or '-' }}</td><td>{{ a[5] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

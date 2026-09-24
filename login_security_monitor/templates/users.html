@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>👥 User Management</h2>
+<table>
+  <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th>
+      <th>Fails</th><th>Locked Until</th><th>Last Login</th>
+      <th>Last IP</th><th>Actions</th></tr>
+  {% for u in rows %}
+  <tr>
+    <td>{{ u[0] }}</td><td>{{ u[1] }}</td><td>{{ u[2] }}</td>
+    <td><span class="badge {% if u[3]=='admin' %}success{% else %}fail{% endif %}">{{ u[3] }}</span></td>
+    <td>{{ u[4] }}</td><td>{{ u[5] or '-' }}</td>
+    <td>{{ u[6] or '-' }}</td><td>{{ u[7] or '-' }}</td>
+    <td>
+      {% if u[5] %}
+      <form action="{{ url_for('users_unlock', uid=u[0]) }}" method="POST" style="display:inline">
+        <button class="btn-warn">Unlock</button>
+      </form>
+      {% endif %}
+      {% if u[3] != 'admin' %}
+      <form action="{{ url_for('users_promote', uid=u[0]) }}" method="POST" style="display:inline"
+            onsubmit="return confirm('Promote to admin?');">
+        <button class="btn">Promote</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>🚫 IP Blacklist</h2>
+<div class="card" style="max-width:100%; margin:15px 0;">
+  <h3>Add IP to Blacklist</h3>
+  <form method="POST" action="{{ url_for('blacklist_add') }}" class="inline-form">
+    <input name="ip" placeholder="192.168.1.100" required>
+    <input name="reason" placeholder="Reason" required>
+    <button type="submit">Block</button>
+  </form>
+</div>
+<table>
+  <tr><th>ID</th><th>IP</th><th>Reason</th><th>Source</th><th>Added</th><th>Action</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td>{{ r[0] }}</td><td>{{ r[1] }}</td><td>{{ r[2] }}</td>
+    <td>{% if r[3] %}<span class="badge fail">AUTO</span>
+        {% else %}<span class="badge success">MANUAL</span>{% endif %}</td>
+    <td>{{ r[4] }}</td>
+    <td>
+      <form action="{{ url_for('blacklist_remove', bid=r[0]) }}" method="POST"
+            style="display:inline" onsubmit="return confirm('Unblock?');">
+        <button class="btn-del">Remove</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

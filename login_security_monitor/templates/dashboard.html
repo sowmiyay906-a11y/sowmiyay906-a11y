@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>📊 Security Operations Dashboard</h2>
+
+<div class="stats">
+  <div class="stat blue"><h3>{{ total_users }}</h3><p>Total Users</p></div>
+  <div class="stat green"><h3>{{ success_logins }}</h3><p>Successful Logins</p></div>
+  <div class="stat red"><h3>{{ failed_logins }}</h3><p>Failed Logins</p></div>
+  <div class="stat orange"><h3>{{ blacklisted }}</h3><p>Blacklisted IPs</p></div>
+  <div class="stat purple"><h3>{{ alerts_24h }}</h3><p>Alerts (24h)</p></div>
+</div>
+
+<div class="grid-2">
+  <div class="chart-card">
+    <h3>📈 Login Activity — Last 7 Days</h3>
+    <canvas id="timelineChart"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>🚨 Alert Type Breakdown</h3>
+    <canvas id="alertChart"></canvas>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="chart-card">
+    <h3>🎯 Top Offending IPs</h3>
+    <table>
+      <tr><th>IP</th><th>Failed Attempts</th></tr>
+      {% for ip, cnt in top_ips %}
+        <tr><td>{{ ip }}</td><td><strong class="red-text">{{ cnt }}</strong></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="chart-card">
+    <h3>🔔 Recent Alerts</h3>
+    <table>
+      <tr><th>Type</th><th>Message</th><th>Severity</th></tr>
+      {% for a in recent_alerts %}
+        <tr>
+          <td>{{ a[0] }}</td>
+          <td>{{ a[1][:55] }}</td>
+          <td class="sev-{{ a[2]|lower }}">{{ a[2] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<script>
+const timeline = {{ timeline|tojson }};
+const alertBreakdown = {{ alert_breakdown|tojson }};
+
+new Chart(document.getElementById('timelineChart'), {
+  type: 'line',
+  data: {
+    labels: timeline.map(r => r[0]),
+    datasets: [
+      { label:'Successful', data: timeline.map(r=>r[1]),
+        borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.15)',
+        tension:0.3, fill:true },
+      { label:'Failed', data: timeline.map(r=>r[2]),
+        borderColor:'#dc2626', backgroundColor:'rgba(220,38,38,0.15)',
+        tension:0.3, fill:true }
+    ]
+  }
+});
+
+new Chart(document.getElementById('alertChart'), {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(alertBreakdown),
+    datasets: [{
+      data: Object.values(alertBreakdown),
+      backgroundColor: ['#dc2626','#f97316','#eab308','#38bdf8','#a855f7']
+    }]
+  }
+});
+</script>
+{% endblock %}
